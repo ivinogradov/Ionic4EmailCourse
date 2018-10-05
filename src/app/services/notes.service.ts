@@ -41,7 +41,7 @@ export class NotesService {
     return this.notes.find(note => note.id === id);
   }
 
-  createNote(title): void {
+  createNote(title): number {
     // Create a unique id that is one larger than the current largest id
     const id = Math.max(...this.notes.map(note => parseInt(note.id, 10)), 0) + 1;
 
@@ -52,6 +52,7 @@ export class NotesService {
     });
 
     this.save();
+    return id;
   }
 
   deleteNote(note): void {

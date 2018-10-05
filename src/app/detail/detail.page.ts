@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Note } from '../interfaces/note';
+import { ActivatedRoute } from '@angular/router';
+import { NotesService } from '../services/notes.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-detail',
@@ -6,10 +10,43 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./detail.page.scss'],
 })
 export class DetailPage implements OnInit {
+  private note: Note;
 
-  constructor() { }
+  constructor(
+    private route: ActivatedRoute,
+    private notesService: NotesService,
+    private navCtrl: NavController
+    ) {
+      // Initialize a placeholder note until the actual note can be loaded in
+      this.note = {
+        id: '',
+        title: '',
+        content: ''
+      };
+  }
 
   ngOnInit() {
+    // Get the id of the note from the URL
+    const noteId = this.route.snapshot.paramMap.get('id');
+
+    // Check that the data is loaded before getting the note
+    // handles the case when the detail page is loaded directly via the URL
+    if (this.notesService.loaded) {
+      this.note = this.notesService.getNote(noteId);
+    } else {
+      this.notesService.load().then(() => {
+        this.note = this.notesService.getNote(noteId);
+      });
+    }
+  }
+
+  noteChanged() {
+    this.notesService.save();
+  }
+
+  deleteNote() {
+    this.notesService.deleteNote(this.note);
+    this.navCtrl.navigateBack('/notes');
   }
 
 }
