@@ -1,11 +1,13 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { NotesService } from './notes.service';
+import { IonicStorageModule } from '@ionic/storage';
 
 describe('NotesService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [NotesService]
+      providers: [NotesService],
+      imports: [ IonicStorageModule.forRoot() ]
     });
   });
 
